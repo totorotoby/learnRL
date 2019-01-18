@@ -1,0 +1,5 @@
+ideas:
+
+*find all states, and values with a single run of exploration only search, then go through list of states, and find win conditions
+
+*save states and read in from seperate file the array. Also build main so that user can choose from command line arguments what type of player they would like to play against

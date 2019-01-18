@@ -1,0 +1,21 @@
+from RLplayer import RLplayer
+from Game import Board
+from Util import *
+
+
+def main():
+
+    player0 = RLplayer(0)
+    player1 = RLplayer(1)
+
+    for _ in range(2000):
+        board = Board()
+        player0.update_board(board)
+        player1.update_board(board)
+        board.start_game(player0, player1)
+        player0.update_values()
+        player1.update_values()
+
+    print(len(player0.val_tab))
+        
+main()
