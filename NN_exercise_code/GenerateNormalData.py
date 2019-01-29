@@ -20,8 +20,16 @@ class instance:
 
 def genSamples(mean, cov, num):
 	'''generates num number of samples from normal with mean and std'''
-	print(cov)
-	samples = np.random.multivariate_normal(mean,cov,num)
+	
+	numSamples = random.sample(range(num[0],num[1]),1)
+
+	print(mean)
+	for row in cov:
+		print(row)
+
+	print('\n\n')
+
+	samples = np.random.multivariate_normal(mean,cov, numSamples[0])
 	samples = [[round(i,2) for i in samples[j]] for j in range(len(samples))]
 	return samples
 
@@ -42,7 +50,7 @@ def getClassArray(i, lenClasses):
 
 
 
-def genData(numClass, numSamples ,dim, meanRange, stdRange, covRange):
+def genData(numClass, numSamples ,dim, meanRange, stdRange):
 	'''
 	generates numClass clumps of num samples with data in dim dimensions,
    	with means and stds ranging in meanRange and stdRange
@@ -56,14 +64,18 @@ def genData(numClass, numSamples ,dim, meanRange, stdRange, covRange):
 
 		cov = [[0 for _ in range(dim)] for _ in range(dim)]
 		
+		Vars = [random.sample(range(1,stdRange),1)[0] for _ in range(dim)]
+		covRange = min(Vars)
 		for i in range(dim):
 			for j in range(i, dim):
-				if i == j:
-					cov[i][j] =  random.sample(range(1,stdRange), 1)[0]
-				else:
+				if i != j:
 					samp = random.sample(range(-covRange, covRange), 1)[0]
 					cov[i][j] = samp
 					cov[j][i] = samp
+				else:
+					cov[i][i] = Vars[i]
+
+					
 
 		#for row in cov:
 		#	print(row)
@@ -118,7 +130,6 @@ def getColor(label):
 	for i in range(len(label)):
 		if label[i] == 1:
 			return colors[i]
-
 
 
 def writeData(data, filename):
@@ -178,12 +189,17 @@ def main():
 	3. dimension of attributes
 	4.range of means
 	5. range of stds
-	6. covarience matrix
-	6. write flag
-	7. write filename
+	7. write flag
+	8. write filename
 	'''
+	if len(sys.argv) == 1:
+		print('python3 GenerateNormalData.py\nOptions: [NumClasses] [Range NumSamples (comma seperated)] [NumDimensions] [Range Means] [Range stds] [Write Flag] [Filename]')
+		exit(0)
 
-	variables = [ int(i) for i in sys.argv[1:7]]
+
+	variables = [int(sys.argv[i]) for i in range(1,6) if i != 2]
+	variables.insert(1, [int(i) for i in sys.argv[2].split(',')])
+	print(variables)
 	
 	data = genData(*variables)
 

@@ -2,7 +2,6 @@ import sys
 import numpy as np
 import GenerateNormalData as gnd
 
-
 def sortData(data):
 	'''
 	sorts data by labels and returns it as list of lists
@@ -30,7 +29,6 @@ def single_multinorm_logLike(classInstances):
 
 	'''
 	finds the maximum likelyhood parameters for a single bivariate normal distrubiton
-	with no correlation at all
 	'''
 	instanceAtts = [inst.attributes for inst in classInstances]
 	At_matrix = np.transpose(instanceAtts)
@@ -38,22 +36,15 @@ def single_multinorm_logLike(classInstances):
 	numAtt = len(instanceAtts[0])
 	numInst = len(instanceAtts)
 
-	#for instance in instanceAtts:
-		#print(instance)
 
 	Means = []
-	Covs = [[0 for _ in range(numAtt)] for _ in range(numAtt)]
 
 	#means
 	for i in range(numAtt):
-		Means.append(sum(At_matrix)/numInst)
+		Means.append(sum(At_matrix[i])/numInst)
 
 	#covariances
-	cov = np.cov(At_matrix)
-	
-	print(cov)
-
-
+	Covs = np.cov(At_matrix)
 
 	return Means, Covs
 
@@ -63,6 +54,19 @@ def probClass(sortedData):
 	returns estimated as uniform probability of being in class
 	'''
 	return [len(Class)/len(sortedData) for Class in sortedData]
+
+
+def predict(estParams, instance):
+	'''
+	predicts which class a data point will be in from using the enstimated parameters from 
+	labeled data. Using Ethem Alpaydin page 101, but would be interesting to just use
+	numpy pdfs.
+	'''
+
+	
+
+
+
 
 
 
@@ -75,12 +79,16 @@ def main():
 		gnd.graphData(data[0])
 
 
-
-
-
 	data = sortData(data)
 
+
+
+	# getting all estimated parameters for multi variate distributions
+	# TODO something is messed up with the covariences
+	probClasses = probClass(data)
+	estDistParam = []
 	for Class in data:
-		single_multinorm_logLike(Class)
+		estDistParam.append(single_multinorm_logLike(Class))
+
 
 main()
